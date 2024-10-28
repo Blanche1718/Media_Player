@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Anla</class>
+ <widget class="QMainWindow" name="Anla">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Anla</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QPushButton" name="stop">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>200</y>
+      <width>51</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Stop</string>
+    </property>
+   </widget>
+   <widget class="QToolButton" name="next">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>230</y>
+      <width>24</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Next</string>
+    </property>
+   </widget>
+   <widget class="QToolButton" name="prev">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>230</y>
+      <width>24</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Prev</string>
+    </property>
+   </widget>
+   <widget class="QSlider" name="volume">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>40</y>
+      <width>16</width>
+      <height>160</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>16</width>
+      <height>160</height>
+     </size>
+    </property>
+    <property name="maximum">
+     <number>100</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="music_list">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>51</y>
+      <width>191</width>
+      <height>231</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="search_bar">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>20</y>
+      <width>161</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>            Search_bar</string>
+    </property>
+   </widget>
+   <widget class="QToolButton" name="play_pause">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>200</y>
+      <width>41</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>...</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="reset">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>270</y>
+      <width>191</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>RESET</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuOuvrir">
+    <property name="title">
+     <string>Ouvrir</string>
+    </property>
+   </widget>
+   <addaction name="menuOuvrir"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
