@@ -5,6 +5,7 @@
 #include <QMediaPlayer>
 #include <QPushButton>
 #include <QSlider>
+#include <QTextStream>
 #include <QLineEdit>
 #include <QProgressBar>
 #include <QAction>
@@ -35,6 +36,9 @@ private slots:
     void setPosition(quint64 position);
     void openFile();
     void currentSong();
+    void openM3uFile();
+    void saveM3uFile();
+
 
 
 private:

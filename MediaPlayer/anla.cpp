@@ -8,18 +8,10 @@ Anla::Anla(QWidget *parent)
       mediaPlayer(new QMediaPlayer(this)),
       currentSongIndex(0)
 
-
-
-
 {
     ui->setupUi(this);
 
     song_label = ui->song_label;
-
-
-    library.append(QUrl::fromLocalFile("C:/Users/DELL/Music/Billie Eilish WILDFLOWER Official Lyric Video_wX1tbAFOef_Fny.mp3"));
-    library.append(QUrl::fromLocalFile("C:/Users/DELL/Music/burna_boy_for_my_han..._71787.m4a"));
-    library.append(QUrl::fromLocalFile("C:/Users/DELL/Music/intuition_aac_71522.m4a"));
 
 
     for (const auto &song : library){
@@ -54,11 +46,8 @@ Anla::Anla(QWidget *parent)
     } );
 
     connect(ui->music_list, &QListWidget::currentRowChanged, this, &Anla::currentSong);
-
-
-
-
-
+    connect(ui->actionOpen_m3uFile, &QAction::triggered, this, &Anla::openM3uFile);
+    connect(ui->actionSave_M3uFile, &QAction::triggered, this, &Anla::saveM3uFile);
 
 }
 
@@ -69,7 +58,7 @@ Anla::~Anla()
 
 
 void Anla::openFile(){
-    QStringList files = QFileDialog::getOpenFileNames(this, "Open Audio File", "", "Audio Files (*.mp3 *.wav *.m4a *.ogg);;All Files(*)");
+    QStringList files = QFileDialog::getOpenFileNames(this, "Open Audio File", "", "Audio Files (*.mp3 *.wav *.ogg);;All Files(*)");
     for (const QString &file : files) {
             QUrl url = QUrl::fromLocalFile(file);
             library.append(url);
@@ -82,8 +71,9 @@ void Anla::play(){
     if (mediaPlayer->mediaStatus()==QMediaPlayer::NoMedia){
         openFile();
     }else{
-        currentSong();
+
         mediaPlayer->play();
+        currentSong();
 
     }
 
@@ -144,11 +134,56 @@ void Anla::resetLibrary(){
     ui->music_list->clear();
     song_label->setText("");
     library.clear();
+    currentSongIndex = -1;
 
 }
 void Anla::currentSong(){
-    QUrl song_url(library[currentSongIndex]);
-    QString song_name=song_url.fileName();
-    song_label->setText(QString("Lecture de : ")+ song_name);
+    if (currentSongIndex >= 0 && currentSongIndex < library.size()) {
+           QUrl song_url(library[currentSongIndex]);
+           QString song_name = song_url.fileName();
+           song_label->setText(QString("Lecture de : ") + song_name);
+       } else {
+           song_label->setText("");  // Réinitialiser l'affichage si l'index est invalide
+       }
+}
+
+void Anla::openM3uFile() {
+    QString fileName = QFileDialog::getOpenFileName(this, "Open Playlist", "", "Playlists (*.m3u);;All Files (*)");
+    if (fileName.isEmpty()) return;
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly)) return;
+
+    QTextStream in(&file);
+    library.clear();
+    ui->music_list->clear();
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        if (!line.startsWith("#")) {
+            QUrl url = QUrl::fromLocalFile(line);
+
+            if (line.startsWith("\"") && line.endsWith("\"")) {
+                        line = line.mid(1, line.length() - 2);
+                    }
+            library.append(url);
+            QListWidgetItem *item = new QListWidgetItem(QFileInfo(line).fileName());
+            ui->music_list->addItem(item);
+        }
+    }
+    file.close();
+}
+
+void Anla::saveM3uFile() {
+    QString fileName = QFileDialog::getSaveFileName(this, "Save Playlist", "", "Playlists (*.m3u);;All Files (*)");
+    if (fileName.isEmpty()) return;
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly)) return;
+
+    QTextStream out(&file);
+    for (const QUrl &url : qAsConst(library)) {
+        out << url.toLocalFile() << "\n";
+    }
+    file.close();
 }
 

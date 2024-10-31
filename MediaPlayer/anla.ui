@@ -178,13 +178,31 @@
      <string>Open</string>
     </property>
     <addaction name="actionOpen_File"/>
+    <addaction name="actionOpen_m3uFile"/>
+   </widget>
+   <widget class="QMenu" name="menuSave_File">
+    <property name="title">
+     <string>Save_File</string>
+    </property>
+    <addaction name="actionSave_M3uFile"/>
    </widget>
    <addaction name="menuOpen"/>
+   <addaction name="menuSave_File"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen_File">
    <property name="text">
     <string>Open File</string>
+   </property>
+  </action>
+  <action name="actionOpen_m3uFile">
+   <property name="text">
+    <string>Open_m3uFile</string>
+   </property>
+  </action>
+  <action name="actionSave_M3uFile">
+   <property name="text">
+    <string>Save_M3uFile</string>
    </property>
   </action>
  </widget>
