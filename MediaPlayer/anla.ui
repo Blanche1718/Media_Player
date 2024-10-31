@@ -14,23 +14,10 @@
    <string>Anla</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="stop">
+   <widget class="QToolButton" name="next_button">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>200</y>
-      <width>51</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Stop</string>
-    </property>
-   </widget>
-   <widget class="QToolButton" name="next">
-    <property name="geometry">
-     <rect>
-      <x>460</x>
+      <x>470</x>
       <y>230</y>
       <width>24</width>
       <height>21</height>
@@ -40,10 +27,10 @@
      <string>Next</string>
     </property>
    </widget>
-   <widget class="QToolButton" name="prev">
+   <widget class="QToolButton" name="prev_button">
     <property name="geometry">
      <rect>
-      <x>390</x>
+      <x>400</x>
       <y>230</y>
       <width>24</width>
       <height>21</height>
@@ -53,11 +40,11 @@
      <string>Prev</string>
     </property>
    </widget>
-   <widget class="QSlider" name="volume">
+   <widget class="QSlider" name="volumeSlider">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>40</y>
+      <x>530</x>
+      <y>60</y>
       <width>16</width>
       <height>160</height>
      </rect>
@@ -78,8 +65,8 @@
    <widget class="QListWidget" name="music_list">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>51</y>
+      <x>90</x>
+      <y>50</y>
       <width>191</width>
       <height>231</height>
      </rect>
@@ -88,40 +75,92 @@
    <widget class="QLineEdit" name="search_bar">
     <property name="geometry">
      <rect>
-      <x>260</x>
+      <x>280</x>
       <y>20</y>
       <width>161</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>            Search_bar</string>
+     <string>            Search_song</string>
     </property>
    </widget>
-   <widget class="QToolButton" name="play_pause">
+   <widget class="QToolButton" name="play_button">
     <property name="geometry">
      <rect>
-      <x>380</x>
+      <x>360</x>
       <y>200</y>
       <width>41</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>...</string>
+     <string>Play</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="reset">
+   <widget class="QPushButton" name="reset_button">
     <property name="geometry">
      <rect>
-      <x>420</x>
-      <y>270</y>
+      <x>380</x>
+      <y>290</y>
       <width>191</width>
       <height>22</height>
      </rect>
     </property>
     <property name="text">
      <string>RESET</string>
+    </property>
+   </widget>
+   <widget class="QToolButton" name="pause_button">
+    <property name="geometry">
+     <rect>
+      <x>490</x>
+      <y>200</y>
+      <width>31</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pause</string>
+    </property>
+   </widget>
+   <widget class="QToolButton" name="stop_button">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>200</y>
+      <width>31</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Stop</string>
+    </property>
+   </widget>
+   <widget class="QSlider" name="progression">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>260</y>
+      <width>160</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="song_label">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>80</y>
+      <width>161</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Lecture de :</string>
     </property>
    </widget>
   </widget>
@@ -134,8 +173,20 @@
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuOpen">
+    <property name="title">
+     <string>Open</string>
+    </property>
+    <addaction name="actionOpen_File"/>
+   </widget>
+   <addaction name="menuOpen"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionOpen_File">
+   <property name="text">
+    <string>Open File</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
