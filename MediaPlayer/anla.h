@@ -17,6 +17,9 @@
 #include <QSqlError>
 #include <algorithm>
 #include <random>
+#include <random>
+#include <QRandomGenerator>
+
 
 
 QT_BEGIN_NAMESPACE
@@ -51,7 +54,6 @@ private slots:
     void random();
     void updateProgression(qint64 position);
     void addToLibrary();
-    void searchInPlaylist();
     void playPlaylist();
     void playNextInPlaylist();
 

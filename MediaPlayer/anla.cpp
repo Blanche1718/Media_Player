@@ -22,17 +22,10 @@ Anla::Anla(QWidget *parent)
     progression_label->setText("00:00");
 
     if (initializeDatabase()) {
-            libraryDatabase(); // Charger les chansons enregistrées au démarrage
+            libraryDatabase();
         } else {
             qDebug() << "Échec de l'initialisation de la base de données.";
         }
-
-
-    /*for (const auto &song : library){
-        QListWidgetItem *item = new QListWidgetItem(QFileInfo(song.toLocalFile()).fileName());
-        ui->music_list->addItem(item);
-    }*/
-
 
     connect(ui->actionOpen_File,&QAction::triggered,this,&Anla::openFile);
     connect(ui->play_button,&QPushButton::clicked,this,&Anla::play);
@@ -43,7 +36,6 @@ Anla::Anla(QWidget *parent)
     connect(ui->reset_button,&QPushButton::clicked,this,&Anla::resetLibrary);
     connect(ui->random_button,&QPushButton::clicked,this,&Anla::random);
     connect(ui->Add_Button, &QPushButton::clicked, this, &Anla::addToLibrary);
-    connect(ui->search_song_list, &QLineEdit::textEdited, this, &Anla::searchInPlaylist);
     connect(ui->play_all_button, &QPushButton::clicked, this, &Anla::playPlaylist);
     connect(ui->search_bar,&QLineEdit::textEdited,this,&Anla::searchSong);
     connect(ui->volumeSlider,&QSlider::valueChanged,this,&Anla::setVolume);
@@ -53,30 +45,27 @@ Anla::Anla(QWidget *parent)
     connect(mediaPlayer, &QMediaPlayer::durationChanged, this, [this](qint64 duration) {
         ui->progression->setMaximum(duration);
     });
-
+    connect(ui->actionOpen_m3uFile, &QAction::triggered, this, &Anla::openM3uFile);
+    connect(ui->actionSave_M3uFile, &QAction::triggered, this, &Anla::saveM3uFile);
 
     connect(ui->music_list,&QListWidget::currentRowChanged,this,[this](int row){
         if(row>=0 && row< library.size()){
             currentSongIndex=row;
             mediaPlayer->setMedia(library[currentSongIndex]);
-            mediaPlayer->play();
+            /*mediaPlayer->play();*/
             currentSong(library[currentSongIndex]);
 
         }
     } );
 
 
-    connect(ui->actionOpen_m3uFile, &QAction::triggered, this, &Anla::openM3uFile);
-    connect(ui->actionSave_M3uFile, &QAction::triggered, this, &Anla::saveM3uFile);
-
     connect(mediaPlayer, &QMediaPlayer::mediaStatusChanged, this, [this](QMediaPlayer::MediaStatus status) {
         if (status == QMediaPlayer::EndOfMedia && currentPlaylistIndex != -1) {
             playNextInPlaylist();
         }
     });
-
-
 }
+
 
 Anla::~Anla()
 {
@@ -95,6 +84,8 @@ void Anla::openFile(){
         }
 }
 
+
+
 void Anla::play(){
     if (mediaPlayer->mediaStatus()==QMediaPlayer::NoMedia){
         openFile();
@@ -112,25 +103,30 @@ void Anla::pause(){
     mediaPlayer->pause();
 }
 
+
 void Anla::stop(){
     mediaPlayer->stop();
 }
+
 
 void Anla::setVolume(int volume){
     mediaPlayer->setVolume(volume);
     volume_label->setText(QString::number(volume));
 }
 
+
 void Anla::setPosition(quint64 position){
     ui->progression->setValue(position);
     mediaPlayer->setPosition(position);
 }
+
 
 void Anla::updateProgression(qint64 position){
     int seconds = (position / 1000) % 60;
     int minutes = (position / 60000) % 60;
     progression_label->setText(QString::asprintf("%02d:%02d", minutes, seconds));
 }
+
 
 void Anla::next(){
     if(!library.isEmpty()){
@@ -142,6 +138,7 @@ void Anla::next(){
 
 }
 
+
 void Anla::prev(){
     if(!library.isEmpty()){
         currentSongIndex=(currentSongIndex-1+library.size())%library.size();
@@ -152,13 +149,10 @@ void Anla::prev(){
 
 }
 
+
 void Anla::searchSong() {
     QString searchText = ui->search_bar->text().toLower();
 
-    if (searchText.isEmpty()) {
-        ui->music_list->clearSelection();
-        return;
-    }
 
     for (int i = 0; i < library.size(); ++i) {
         QString fileName = QFileInfo(library[i].toLocalFile()).fileName().toLower();
@@ -172,6 +166,7 @@ void Anla::searchSong() {
     }
 }
 
+
 void Anla::resetLibrary(){
     ui->music_list->clear();
     song_label->setText("");
@@ -179,10 +174,14 @@ void Anla::resetLibrary(){
     currentSongIndex = -1;
 
 }
+
+
 void Anla::currentSong(const QUrl &songUrl){
     QString songName = QFileInfo(songUrl.toLocalFile()).fileName();
     song_label->setText(QString("Lecture de : ") + songName);
 }
+
+
 
 void Anla::openM3uFile() {
     QString fileName = QFileDialog::getOpenFileName(this, "Open Playlist", "", "Playlists (*.m3u);;All Files (*)");
@@ -209,13 +208,9 @@ void Anla::openM3uFile() {
         }
     }
     file.close();
-    if (!playlist.isEmpty()) {
-            currentSongIndex = 0;
-            mediaPlayer->setMedia(playlist[currentSongIndex]);
-            mediaPlayer->play();
-            currentSong(playlist[currentSongIndex]);
-        }
+
 }
+
 
 void Anla::saveM3uFile() {
     QString fileName = QFileDialog::getSaveFileName(this, "Save Playlist", "", "Playlists (*.m3u);;All Files (*)");
@@ -230,6 +225,8 @@ void Anla::saveM3uFile() {
     }
     file.close();
 }
+
+
 bool Anla::initializeDatabase() {
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("Anla_music.db");
@@ -251,6 +248,7 @@ bool Anla::initializeDatabase() {
     }
     return true;
 }
+
 
 void Anla::libraryDatabase() {
     QSqlQuery query("SELECT path, name FROM songs");
@@ -280,17 +278,21 @@ void Anla::saveSongDatabase(const QUrl &songUrl) {
     }
 }
 
-void Anla::random(){
-    if (!library.isEmpty()){
-        std::random_device rd;
-        std::default_random_engine engine(rd());
-        std::shuffle(library.begin(),library.end(),engine);
-        currentSongIndex = 0;
+
+void Anla::random() {
+    if (!library.isEmpty()) {
+        int newSongIndex;
+
+        do {
+            newSongIndex = QRandomGenerator::global()->bounded(library.size());
+        } while (newSongIndex == currentSongIndex);
+        currentSongIndex = newSongIndex;
         mediaPlayer->setMedia(library[currentSongIndex]);
         mediaPlayer->play();
         currentSong(library[currentSongIndex]);
     }
 }
+
 
 void Anla::addToLibrary(){
     for (const QUrl &url : playlist) {
@@ -298,11 +300,13 @@ void Anla::addToLibrary(){
             QListWidgetItem *item = new QListWidgetItem(QFileInfo(url.toLocalFile()).fileName());
             ui->music_list->addItem(item);
             saveSongDatabase(url);
-
         }
 }
 
-void Anla::searchInPlaylist(){
+
+
+
+/*void Anla::searchInPlaylist(){
     QString searchText = ui->search_song_list->text().toLower();
 
     if (searchText.isEmpty()) {
@@ -320,7 +324,8 @@ void Anla::searchInPlaylist(){
             return;
         }
     }
-}
+}*/
+
 
 void Anla::playPlaylist() {
     if (!playlist.isEmpty()) {
