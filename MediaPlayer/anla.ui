@@ -495,7 +495,7 @@
    <widget class="QListWidget" name="music_list">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>130</y>
       <width>221</width>
       <height>251</height>
@@ -505,14 +505,14 @@
    <widget class="QLineEdit" name="search_bar">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>100</y>
-      <width>191</width>
+      <width>221</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>Search :</string>
+     <string>Entrez le texte de votre recherche ici</string>
     </property>
    </widget>
    <widget class="QPushButton" name="reset_button">
@@ -544,9 +544,9 @@
    <widget class="QLabel" name="song_label">
     <property name="geometry">
      <rect>
-      <x>320</x>
+      <x>270</x>
       <y>120</y>
-      <width>221</width>
+      <width>281</width>
       <height>41</height>
      </rect>
     </property>
@@ -1176,6 +1176,19 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; text-decoration: underline;&quot;&gt;Liste de lecture&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="play_library">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>390</y>
+      <width>80</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Play_All</string>
+    </property>
+   </widget>
    <zorder>volumeSlider</zorder>
    <zorder>music_list</zorder>
    <zorder>reset_button</zorder>
@@ -1195,6 +1208,7 @@ p, li { white-space: pre-wrap; }
    <zorder>textEdit</zorder>
    <zorder>textEdit_2</zorder>
    <zorder>search_bar</zorder>
+   <zorder>play_library</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

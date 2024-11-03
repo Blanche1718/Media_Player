@@ -17,7 +17,7 @@
 #include <QSqlError>
 #include <algorithm>
 #include <random>
-#include <random>
+#include <QMessageBox>
 #include <QRandomGenerator>
 
 
@@ -56,6 +56,8 @@ private slots:
     void addToLibrary();
     void playPlaylist();
     void playNextInPlaylist();
+    void playLibrary();
+    void playNextInLibrary();
 
 
 
@@ -69,6 +71,7 @@ private:
     QPushButton *stop_button;
     QPushButton *next_button;
     QPushButton *prev_button;
+    QPushButton *play_library;
     QPushButton *reset_button;
     QPushButton *random_button;
     QLineEdit *search_bar;
@@ -78,11 +81,12 @@ private:
     QListWidget *song_list;
     QVector<QUrl> library;
     QList<QUrl> playlist;
-    int currentSongIndex;
+    int currentSongIndex=-1;
     int currentPlaylistIndex=-1;
     QLabel *song_label;
     QLabel *volume_label;
     QLabel *progression_label;
     QSqlDatabase db;
+    QList<int> randomOrder;
 };
 #endif // ANLA_H

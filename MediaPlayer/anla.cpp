@@ -6,12 +6,14 @@ Anla::Anla(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::Anla),
       mediaPlayer(new QMediaPlayer(this)),
-      currentSongIndex(0)
+      currentSongIndex(-1)
 
 {
     ui->setupUi(this);
 
     song_label = ui->song_label;
+    song_label->setText("");
+
     song_list = ui->song_list;
 
     volume_label = ui->volume_label;
@@ -27,8 +29,10 @@ Anla::Anla(QWidget *parent)
             qDebug() << "Échec de l'initialisation de la base de données.";
         }
 
+
     connect(ui->actionOpen_File,&QAction::triggered,this,&Anla::openFile);
     connect(ui->play_button,&QPushButton::clicked,this,&Anla::play);
+    connect(ui->play_library,&QPushButton::clicked,this,&Anla::playLibrary);
     connect(ui->pause_button,&QPushButton::clicked,this,&Anla::pause);
     connect(ui->stop_button,&QPushButton::clicked,this,&Anla::stop);
     connect(ui->next_button,&QPushButton::clicked,this,&Anla::next);
@@ -64,6 +68,8 @@ Anla::Anla(QWidget *parent)
             playNextInPlaylist();
         }
     });
+
+
 }
 
 
@@ -86,17 +92,15 @@ void Anla::openFile(){
 
 
 
-void Anla::play(){
-    if (mediaPlayer->mediaStatus()==QMediaPlayer::NoMedia){
-        openFile();
-    }else{
-        qDebug() << "Lecture de la chanson:" << library[currentSongIndex].toString();
-        mediaPlayer->play();
-        currentSong(library[currentSongIndex]);
+void Anla::play() {
 
-    }
-
+    qDebug() << "Lecture de la chanson:" << library[currentSongIndex].toString();
+    mediaPlayer->setMedia(library[currentSongIndex]);
+    mediaPlayer->play();
+    currentSong(library[currentSongIndex]);
+    ui->music_list->clearSelection();
 }
+
 
 
 void Anla::pause(){
@@ -152,30 +156,27 @@ void Anla::prev(){
 
 void Anla::searchSong() {
     QString searchText = ui->search_bar->text().toLower();
-
-
+    ui->music_list->clearSelection();
     for (int i = 0; i < library.size(); ++i) {
         QString fileName = QFileInfo(library[i].toLocalFile()).fileName().toLower();
-
-
         if (fileName.contains(searchText)) {
             ui->music_list->setCurrentRow(i);
             currentSongIndex = i;
             return;
         }
     }
+
 }
 
 
 void Anla::resetLibrary(){
     ui->music_list->clear();
-    song_label->setText("");
     library.clear();
     currentSongIndex = -1;
 
 }
 
-
+//Song joué
 void Anla::currentSong(const QUrl &songUrl){
     QString songName = QFileInfo(songUrl.toLocalFile()).fileName();
     song_label->setText(QString("Lecture de : ") + songName);
@@ -279,22 +280,12 @@ void Anla::saveSongDatabase(const QUrl &songUrl) {
 }
 
 
-void Anla::random() {
-    if (!library.isEmpty()) {
-        int newSongIndex;
-
-        do {
-            newSongIndex = QRandomGenerator::global()->bounded(library.size());
-        } while (newSongIndex == currentSongIndex);
-        currentSongIndex = newSongIndex;
-        mediaPlayer->setMedia(library[currentSongIndex]);
-        mediaPlayer->play();
-        currentSong(library[currentSongIndex]);
-    }
-}
-
 
 void Anla::addToLibrary(){
+    if (playlist.isEmpty()) {
+            QMessageBox::warning(this, "Bibliothèque vide", "Il n'y a pas de chansons à ajouter à la bibliothèque. Ouvrez un fichier de musique pour l'ajouter à la bibliothèque.");
+            return;
+        }
     for (const QUrl &url : playlist) {
             library.append(url);
             QListWidgetItem *item = new QListWidgetItem(QFileInfo(url.toLocalFile()).fileName());
@@ -328,6 +319,12 @@ void Anla::addToLibrary(){
 
 
 void Anla::playPlaylist() {
+
+   if (playlist.isEmpty()) {
+
+       QMessageBox::warning(this, " Playlist vide", "Il n'y a pas de songs à jouer. Ouvrez un fichier dans la liste de lecture pour le jouer.");
+       return;
+    }
     if (!playlist.isEmpty()) {
         currentPlaylistIndex = 0;
         mediaPlayer->setMedia(playlist[currentPlaylistIndex]);
@@ -348,3 +345,48 @@ void Anla::playNextInPlaylist() {
     }
 }
 
+void Anla::random() {
+    if (!library.isEmpty()) {
+        int randomIndex = QRandomGenerator::global()->bounded(library.size());
+        mediaPlayer->setMedia(library[randomIndex]);
+        mediaPlayer->play();
+
+        QString songName = QFileInfo(library[randomIndex].toLocalFile()).fileName();
+        song_label->setText("Lecture de : " + songName);
+        connect(mediaPlayer, &QMediaPlayer::mediaStatusChanged, this, [this](QMediaPlayer::MediaStatus status) {
+            if (status == QMediaPlayer::EndOfMedia) {
+                random();
+            }
+        });
+    }
+}
+
+void Anla::playLibrary() {
+    if (library.isEmpty()) {
+        QMessageBox::warning(this, "Bibliothèque vide", "Il n'y a pas de chansons à jouer dans la bibliothèque.");
+        return;
+     }
+
+      currentSongIndex = 0;
+      mediaPlayer->setMedia(library[currentSongIndex]);
+      mediaPlayer->play();
+      currentSong(library[currentSongIndex]);
+      connect(mediaPlayer, &QMediaPlayer::mediaStatusChanged, this, [this](QMediaPlayer::MediaStatus status) {
+          if (status == QMediaPlayer::EndOfMedia && currentSongIndex != -1) {
+              playNextInLibrary();
+          }
+      });
+
+}
+
+
+void Anla::playNextInLibrary() {
+    if (currentSongIndex + 1 < library.size()) {
+        ++currentSongIndex;
+        mediaPlayer->setMedia(library[currentSongIndex]);
+        mediaPlayer->play();
+        currentSong(library[currentSongIndex]);
+    } else {
+        currentSongIndex = -1;
+    }
+}

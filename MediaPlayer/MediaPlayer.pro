@@ -8,19 +8,12 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    database.cpp \
-    library.cpp \
     main.cpp \
-    anla.cpp \
-    player.cpp \
-    playlist.cpp
+    anla.cpp
+
 
 HEADERS += \
     anla.h \
-    database.h \
-    library.h \
-    player.h \
-    playlist.h
 
 FORMS += \
     anla.ui
